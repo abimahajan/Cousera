@@ -30,7 +30,7 @@ public class PropertiesFileConfig {
     	try
     	{
             //load a properties file
-    		prop.load(new FileInputStream("./src/geeks.properties"));
+    		prop.load(new FileInputStream("./src/cousera.properties"));
  
             //get the different property values
     		if(prop.containsKey("LINKS_LIST"))

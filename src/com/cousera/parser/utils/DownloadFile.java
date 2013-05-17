@@ -1,7 +1,10 @@
 package com.cousera.parser.utils;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -13,6 +16,12 @@ import java.util.Map.Entry;
 
 public class DownloadFile
 {
+	public static void main(String[] args)
+	{
+		System.setProperty("http.proxyHost","115.112.231.106");
+		System.setProperty("http.proxyPort","80");
+		downloadStreamData("https://class.coursera.org/algo/lecture/download.mp4?lecture_id=20", "E:/OnMobile/SPU/PollenStudio/eclipse_umdb_backend/workspace/Cousera/Database/file.mp4");
+	}
 	public void downloadFromMap(Map<String, String> linksMap, String fileToBeCreatedName) 
 	{
 		Iterator<Entry<String, String>> entries = linksMap.entrySet().iterator();
@@ -26,7 +35,7 @@ public class DownloadFile
 			}
 			
 			String fileName=entry.getKey()+".mp4";
-			saveSong(entry.getValue(), fileToBeCreatedName+"/"+fileName);
+			downloadStreamData(entry.getValue(), fileToBeCreatedName+"/"+fileName);
 			
 		}
 		
@@ -41,6 +50,35 @@ public class DownloadFile
 		}
 		return dir;
 	}
+	
+	 private static void downloadStreamData(String url, String fileName)
+	 {
+	        URL tU;
+			try {
+				tU = new URL(url);
+				 HttpURLConnection conn = (HttpURLConnection) tU.openConnection();
+
+			        String type = conn.getContentType();
+			        InputStream ins = conn.getInputStream();
+			        FileOutputStream fout = new FileOutputStream(new File(fileName));
+			        byte[] outputByte = new byte[4096];
+			        int bytesRead;
+			        int length = conn.getContentLength();
+			        int read = 0;
+			        while ((bytesRead = ins.read(outputByte, 0, 4096)) != -1) {
+			            read += bytesRead;
+			            System.out.println(read + " out of " + length);
+			            fout.write(outputByte, 0, bytesRead);
+			        }
+			        fout.flush();
+			        fout.close();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	       
+	    }
 	
 	private boolean saveSong(String url,String outputFileName)
 	{
